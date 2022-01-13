@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -80,12 +78,11 @@ public class RetroframeClient {
                 int imageSize = intFromByteArray(in.readNBytes(4));
                 metaData.put("mem_size", imageSize);
                 log.info("Metadata: " + json);
-                BufferedImage img = ImageIO.read(new BufferedInputStream(in));
                 ImageAndMetadata imageAndMetadata = ImageAndMetadata.builder()
                         .metadataByteSize(metadataSize)
                         .metaData(metaData)
                         .imageByteSize(imageSize)
-                        .image(img)
+                        .imageStream(new BufferedInputStream(in))
                         .build();
                 onReceive.onReceive(imageAndMetadata);
             } catch (Exception e) {
