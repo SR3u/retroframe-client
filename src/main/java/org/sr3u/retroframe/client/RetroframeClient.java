@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RetroframeClient {
 
+    public static final int INTEGER_LENGTH = 4;
     private final Logger log;
 
     public static final Gson GSON = new Gson();
@@ -71,10 +73,10 @@ public class RetroframeClient {
                 out.write(size.getWidth() + "x" + size.getHeight() + "x" + 32);
                 out.write(0);
                 out.flush();
-                int metadataSize = intFromByteArray(in.readNBytes(4));
-                String json = new String(in.readNBytes(metadataSize));
+                int metadataSize = intFromByteArray(readNBytes(in, INTEGER_LENGTH));
+                String json = new String(readNBytes(in, metadataSize));
                 Map<String, Object> metaData = parseMetadata(json);
-                int imageSize = intFromByteArray(in.readNBytes(4));
+                int imageSize = intFromByteArray(readNBytes(in, INTEGER_LENGTH));
                 metaData.put("mem_size", imageSize);
                 log.info("Metadata: " + json);
                 ImageAndMetadata imageAndMetadata = ImageAndMetadata.builder()
@@ -121,6 +123,12 @@ public class RetroframeClient {
                 scheduleRefresh();
             }
         }
+    }
+
+    private static byte[] readNBytes(InputStream in, int len) throws IOException {
+        byte[] buffer = new byte[len];
+        int read = in.read(buffer, 0, len);
+        return buffer;
     }
 
     private static byte[] intToByteArray(int value) {
