@@ -80,12 +80,11 @@ public class RetroframeClient {
                 int imageSize = intFromByteArray(readNBytes(in, INTEGER_LENGTH));
                 metaData.put("mem_size", imageSize);
                 log.info("Metadata: " + json);
-                byte[] imageBytes = readNBytes(in, imageSize);
                 ImageAndMetadata imageAndMetadata = ImageAndMetadata.builder()
                         .metadataByteSize(metadataSize)
                         .metaData(metaData)
                         .imageByteSize(imageSize)
-                        .imageStream(new BufferedInputStream(new ByteArrayInputStream(imageBytes)))
+                        .imageStream(new BufferedInputStream(in, imageSize))
                         .build();
                 onReceive.onReceive(imageAndMetadata);
             } catch (Exception e) {
