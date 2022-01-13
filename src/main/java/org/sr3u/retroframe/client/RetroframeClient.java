@@ -1,8 +1,6 @@
 package org.sr3u.retroframe.client;
 
 import com.google.gson.Gson;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -16,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RetroframeClient {
 
-    private static final Logger log = LogManager.getLogger(RetroframeClient.class);
+    private final Logger log;
 
     public static final Gson GSON = new Gson();
     private final ScheduledExecutorService execService = Executors.newSingleThreadScheduledExecutor();
@@ -32,7 +30,8 @@ public class RetroframeClient {
     private final int port;
     private final String host;
 
-    public RetroframeClient(String host, int port, OnReceiveHandler onReceive, RefreshDelayProvider refreshDelayProvider, ImageSizeProvider imageSizeProvider) {
+    public RetroframeClient(Logger log, String host, int port, OnReceiveHandler onReceive, RefreshDelayProvider refreshDelayProvider, ImageSizeProvider imageSizeProvider) {
+        this.log = log;
         this.port = port;
         this.host = host;
         this.onReceive = onReceive;
@@ -40,8 +39,8 @@ public class RetroframeClient {
         this.refreshDelayProvider = refreshDelayProvider;
     }
 
-    public RetroframeClient(String host, int port, UltimateImageReceiver ultimateImageReceiver) {
-        this(host, port, ultimateImageReceiver, ultimateImageReceiver, ultimateImageReceiver);
+    public RetroframeClient(Logger log, String host, int port, UltimateImageReceiver ultimateImageReceiver) {
+        this(log, host, port, ultimateImageReceiver, ultimateImageReceiver, ultimateImageReceiver);
     }
 
     public void start() {
