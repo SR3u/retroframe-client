@@ -84,7 +84,7 @@ public class RetroframeClient {
                         .metadataByteSize(metadataSize)
                         .metaData(metaData)
                         .imageByteSize(imageSize)
-                        .imageStream(new BufferedInputStream(in, imageSize))
+                        .imageStream(new BufferedInputStream(in, Math.max(imageSize, 8192)))
                         .build();
                 onReceive.onReceive(imageAndMetadata);
             } catch (Exception e) {
