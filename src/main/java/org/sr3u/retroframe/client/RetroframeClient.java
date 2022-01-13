@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -72,7 +71,7 @@ public class RetroframeClient {
                 out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
                 out.flush();
                 Dimension size = imageSizeProvider.getImageDimension();
-                out.write(size.width + "x" + size.height + "x" + 32);
+                out.write(size.getWidth() + "x" + size.getHeight() + "x" + 32);
                 out.write(0);
                 out.flush();
                 int metadataSize = intFromByteArray(in.readNBytes(4));
